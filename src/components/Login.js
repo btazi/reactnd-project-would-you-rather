@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { getInitialData } from "../actions/shared";
 import { login } from "../actions/authedUser";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import {
-  Icon,
-  Grid,
-  Paper,
-  Typography,
-  Select,
-  InputLabel,
-  MenuItem,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +27,7 @@ const Login = (props) => {
 
   useEffect(() => {
     dispatch(getInitialData());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
