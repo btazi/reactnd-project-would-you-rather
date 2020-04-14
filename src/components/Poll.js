@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { useParams, withRouter } from "react-router-dom";
+import { answerQuestion, handleAnswerQuestion } from "../actions/questions";
 import {
   Card,
   CardContent,
@@ -27,8 +28,23 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "5px",
   },
 }));
-const Poll = ({ poll, id, authorAvatar, isAnswered, chosenAnswer }) => {
+
+const Poll = ({
+  dispatch,
+  poll,
+  id,
+  authorAvatar,
+  isAnswered,
+  chosenAnswer,
+}) => {
   const classes = useStyles();
+  const selectRadio = (e) => {
+    const answer = e.target.value;
+    isAnswered
+      ? alert("You have already voted for this question")
+      : dispatch(handleAnswerQuestion(id, answer));
+  };
+
   return (
     <Card className={classes.card}>
       <CardContent className="content">
@@ -41,19 +57,19 @@ const Poll = ({ poll, id, authorAvatar, isAnswered, chosenAnswer }) => {
           <Typography variant="h6">{poll.author} asks</Typography>
         </div>
         <Typography variant="h5">Would You Rather:</Typography>
-        {/* if Poll is answered show radio buttons with selected choice */}
         <RadioGroup
           aria-label="poll"
           name="poll"
           value={isAnswered ? chosenAnswer : null}
+          onChange={selectRadio}
         >
           <FormControlLabel
-            value={poll.optionOne.text}
+            value={"optionOne"}
             control={<Radio />}
             label={poll.optionOne.text}
           />
           <FormControlLabel
-            value={poll.optionTwo.text}
+            value={"optionTwo"}
             control={<Radio />}
             label={poll.optionTwo.text}
           />
@@ -69,9 +85,12 @@ const Poll = ({ poll, id, authorAvatar, isAnswered, chosenAnswer }) => {
 const mapStateToProps = ({ questions, users }, props) => {
   const id = props.match.params.id || props.id;
   const poll = questions[id];
+  const pollPage = props.match.path.includes("questions/");
   return {
     poll,
     authorAvatar: users[poll.author].avatarURL,
+    pollPage,
+    chosenAnswer: props.chosenAnswer,
   };
 };
 

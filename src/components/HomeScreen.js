@@ -71,8 +71,8 @@ const HomeScreen = ({ authedUser, questions }) => {
               isAnswered={displayedQuestions === "answered"}
               chosenAnswer={
                 poll.optionOne.votes.includes(authedUser)
-                  ? poll.optionOne.text
-                  : poll.optionTwo.text
+                  ? "optionOne"
+                  : "optionTwo"
               }
             />
           ))}
