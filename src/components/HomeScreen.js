@@ -65,16 +65,7 @@ const HomeScreen = ({ authedUser, questions }) => {
         {/* Polls List */}
         <Grid item xs={6}>
           {selectedQuestions.map((poll) => (
-            <Poll
-              key={poll.id}
-              id={poll.id}
-              isAnswered={displayedQuestions === "answered"}
-              chosenAnswer={
-                poll.optionOne.votes.includes(authedUser)
-                  ? "optionOne"
-                  : "optionTwo"
-              }
-            />
+            <Poll key={poll.id} id={poll.id} />
           ))}
         </Grid>
       </Grid>

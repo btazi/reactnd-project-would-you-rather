@@ -32,17 +32,19 @@ const useStyles = makeStyles((theme) => ({
 const Poll = ({
   dispatch,
   poll,
-  id,
   authorAvatar,
   isAnswered,
   chosenAnswer,
+  pollPage,
 }) => {
   const classes = useStyles();
   const selectRadio = (e) => {
     const answer = e.target.value;
     isAnswered
       ? alert("You have already voted for this question")
-      : dispatch(handleAnswerQuestion(id, answer));
+      : dispatch(handleAnswerQuestion(poll.id, answer)).then(
+          alert("Your answer has been saved")
+        );
   };
 
   return (
@@ -74,15 +76,17 @@ const Poll = ({
             label={poll.optionTwo.text}
           />
         </RadioGroup>
-        <Button to={`/questions/${poll.id}`} component={Link} color="primary">
-          View Poll
-        </Button>
+        {!pollPage && (
+          <Button to={`/questions/${poll.id}`} component={Link} color="primary">
+            View Poll
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
 };
 
-const mapStateToProps = ({ questions, users }, props) => {
+const mapStateToProps = ({ questions, users, authedUser }, props) => {
   const id = props.match.params.id || props.id;
   const poll = questions[id];
   const pollPage = props.match.path.includes("questions/");
@@ -90,15 +94,17 @@ const mapStateToProps = ({ questions, users }, props) => {
     poll,
     authorAvatar: users[poll.author].avatarURL,
     pollPage,
-    chosenAnswer: props.chosenAnswer,
+    chosenAnswer: poll.optionOne.votes.includes(authedUser)
+      ? "optionOne"
+      : "optionTwo",
+    isAnswered: [...poll.optionOne.votes, ...poll.optionTwo.votes].includes(
+      authedUser
+    ),
   };
 };
 
 Poll.propTypes = {
-  id: PropTypes.string.isRequired,
-  isAnswered: PropTypes.bool,
-  author: PropTypes.string.isRequired,
-  chosenAnswer: PropTypes.string,
+  poll: PropTypes.object.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(Poll));
