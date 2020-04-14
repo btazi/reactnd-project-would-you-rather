@@ -30,35 +30,32 @@ const Login = (props) => {
   }, [dispatch]);
 
   return (
-    <>
-      <Grid item xs={4}></Grid>
-      <Grid item xs={4}>
-        <Paper elevation={1} className={classes.paper}>
-          <Typography variant="h4" align="center">
-            Would You Rather App
-          </Typography>
-          <Typography variant="subtitle1" align="center">
-            Select a user to get started:
-          </Typography>
-          <Select
-            autoWidth
-            value={authedUser}
-            className={classes.select}
-            onChange={handleUserSelect}
-            placeholder="Please select a user"
-          >
-            <MenuItem value={authedUser || "not_selected"}>
-              Please Select a user
+    <Grid item xs={4}>
+      <Paper elevation={1} className={classes.paper}>
+        <Typography variant="h4" align="center">
+          Would You Rather App
+        </Typography>
+        <Typography variant="subtitle1" align="center">
+          Select a user to get started:
+        </Typography>
+        <Select
+          autoWidth
+          value={authedUser}
+          className={classes.select}
+          onChange={handleUserSelect}
+          placeholder="Please select a user"
+        >
+          <MenuItem value={authedUser || "not_selected"}>
+            Please Select a user
+          </MenuItem>
+          {users.map((user) => (
+            <MenuItem key={user.id} value={user.id}>
+              {user.name}
             </MenuItem>
-            {users.map((user) => (
-              <MenuItem key={user.id} value={user.id}>
-                {user.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </Paper>
-      </Grid>
-    </>
+          ))}
+        </Select>
+      </Paper>
+    </Grid>
   );
 };
 

@@ -1,11 +1,12 @@
 import React from "react";
-import { makeStyles, AppBar, Toolbar, Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { makeStyles, AppBar, Toolbar, Button, Avatar } from "@material-ui/core";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { logout } from "../actions/authedUser";
 
 const useStyles = makeStyles((theme) => ({
   leftNav: {
-    flex: 9,
+    flex: 4,
   },
   rightNav: {
     flex: 1,
@@ -13,9 +14,16 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     justifyContent: "space-between",
   },
+  avatar: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
-const Nav = ({ authedUser }) => {
+const Nav = ({ dispatch, authedUser, authedUserDetails }) => {
+  const handleLogout = () => {
+    dispatch(logout());
+    return <Redirect to="/login" />;
+  };
   const classes = useStyles();
   const logedIn = authedUser !== "not_connected";
   return (
@@ -39,7 +47,12 @@ const Nav = ({ authedUser }) => {
             </Button>
           )}
           {logedIn && (
-            <Button component={Link} to="#" color="inherit">
+            <Button component={Link} onClick={handleLogout} color="inherit">
+              <Avatar
+                alt="logged_user"
+                src={authedUserDetails.avatarURL}
+                className={classes.avatar}
+              />
               Log Out
             </Button>
           )}
@@ -49,9 +62,12 @@ const Nav = ({ authedUser }) => {
   );
 };
 
-function mapStateToProps({ authedUser }) {
+function mapStateToProps({ authedUser, users }) {
   return {
     authedUser,
+    authedUserDetails: Object.values(users).find(
+      (user) => user.id === authedUser
+    ),
   };
 }
 
