@@ -18,15 +18,19 @@ const useStyles = makeStyles((theme) => ({
 const HomeScreen = ({ authedUser, questions }) => {
   const [displayedQuestions, setDisplayedQuestions] = useState("unanswered");
   const classes = useStyles();
-  const answeredQuestions = Object.values(questions).filter((question) => {
-    return (
-      question.optionOne.votes.includes(authedUser) ||
-      question.optionTwo.votes.includes(authedUser)
-    );
-  });
-  const unansweredQuestions = Object.values(questions).filter((question) => {
-    return !answeredQuestions.map((q) => q.id).includes(question.id);
-  });
+  const answeredQuestions = Object.values(questions)
+    .filter((question) => {
+      return (
+        question.optionOne.votes.includes(authedUser) ||
+        question.optionTwo.votes.includes(authedUser)
+      );
+    })
+    .sort((a, b) => b.timestamp - a.timestamp);
+  const unansweredQuestions = Object.values(questions)
+    .filter((question) => {
+      return !answeredQuestions.map((q) => q.id).includes(question.id);
+    })
+    .sort((a, b) => b.timestamp - a.timestamp);
   const selectedQuestions =
     displayedQuestions === "answered" ? answeredQuestions : unansweredQuestions;
   console.log(unansweredQuestions);
