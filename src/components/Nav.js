@@ -33,7 +33,7 @@ const Nav = ({ dispatch, authedUser, authedUserDetails }) => {
           <Button component={Link} to="/" color="inherit">
             Home
           </Button>
-          <Button to="/" color="inherit">
+          <Button to="/new_poll" component={Link} color="inherit">
             New Question
           </Button>
           <Button to="/" color="inherit">
