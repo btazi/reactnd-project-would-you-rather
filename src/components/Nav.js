@@ -36,7 +36,7 @@ const Nav = ({ dispatch, authedUser, authedUserDetails }) => {
           <Button to="/new_poll" component={Link} color="inherit">
             New Question
           </Button>
-          <Button to="/" color="inherit">
+          <Button to="/leaderboard" component={Link} color="inherit">
             LeaderBoard
           </Button>
         </div>
@@ -47,7 +47,7 @@ const Nav = ({ dispatch, authedUser, authedUserDetails }) => {
             </Button>
           )}
           {logedIn && (
-            <Button component={Link} onClick={handleLogout} color="inherit">
+            <Button onClick={handleLogout} color="inherit">
               <Avatar
                 alt="logged_user"
                 src={authedUserDetails.avatarURL}
