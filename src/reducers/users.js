@@ -8,6 +8,21 @@ export default function Users(state = {}, action) {
         ...state,
         ...action.users,
       };
+    case ANSWER_QUESTION: {
+      const { qid, answer, userId } = action;
+      const user = state[userId];
+      const answers = user["answers"];
+      return {
+        ...state,
+        [userId]: {
+          ...user,
+          answers: {
+            ...answers,
+            [qid]: answer,
+          },
+        },
+      };
+    }
     default:
       return state;
   }
