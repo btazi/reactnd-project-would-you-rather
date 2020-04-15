@@ -14,6 +14,8 @@ import {
   Radio,
   Avatar,
   Button,
+  Divider,
+  LinearProgress,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +49,56 @@ const Poll = ({
         );
   };
 
+  const form = () => {
+    return (
+      <RadioGroup
+        aria-label="poll"
+        name="poll"
+        value={isAnswered ? chosenAnswer : null}
+        onChange={selectRadio}
+      >
+        <FormControlLabel
+          value={"optionOne"}
+          control={<Radio />}
+          label={poll.optionOne.text}
+        />
+        <FormControlLabel
+          value={"optionTwo"}
+          control={<Radio />}
+          label={poll.optionTwo.text}
+        />
+      </RadioGroup>
+    );
+  };
+
+  const results = () => {
+    const optionOneVotes = poll.optionOne.votes.length;
+    const optionTwoVotes = poll.optionTwo.votes.length;
+    const totalVotes = [...poll.optionOne.votes, ...poll.optionTwo.votes]
+      .length;
+    const optionOnePerc = Math.floor((optionOneVotes / totalVotes) * 100);
+    const optionTwoPerc = Math.floor((optionTwoVotes / totalVotes) * 100);
+    return (
+      <>
+        <Typography variant="h6">
+          {poll.optionOne.text} ({optionOnePerc}%)
+        </Typography>
+        <LinearProgress variant="determinate" value={optionOnePerc} />
+        <Typography variant="subtitle2">
+          {optionOneVotes} out of {totalVotes} votes
+        </Typography>
+        <Divider />
+        <Typography variant="h6">
+          {poll.optionTwo.text} ({optionTwoPerc}%)
+        </Typography>
+        <LinearProgress variant="determinate" value={optionTwoPerc} />
+        <Typography variant="subtitle2">
+          {optionTwoVotes} out of {totalVotes} votes
+        </Typography>
+      </>
+    );
+  };
+
   return (
     <Card className={classes.card}>
       <CardContent className="content">
@@ -59,23 +111,8 @@ const Poll = ({
           <Typography variant="h6">{poll.author} asks</Typography>
         </div>
         <Typography variant="h5">Would You Rather:</Typography>
-        <RadioGroup
-          aria-label="poll"
-          name="poll"
-          value={isAnswered ? chosenAnswer : null}
-          onChange={selectRadio}
-        >
-          <FormControlLabel
-            value={"optionOne"}
-            control={<Radio />}
-            label={poll.optionOne.text}
-          />
-          <FormControlLabel
-            value={"optionTwo"}
-            control={<Radio />}
-            label={poll.optionTwo.text}
-          />
-        </RadioGroup>
+        {(!pollPage || (pollPage && !isAnswered)) && form()}
+        {pollPage && isAnswered && results()}
         {!pollPage && (
           <Button to={`/questions/${poll.id}`} component={Link} color="primary">
             View Poll
