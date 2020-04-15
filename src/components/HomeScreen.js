@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const HomeScreen = ({ authedUser, questions }) => {
-  const [displayedQuestions, setDisplayedQuestions] = useState("answered");
+  const [displayedQuestions, setDisplayedQuestions] = useState("unanswered");
   const classes = useStyles();
   const answeredQuestions = Object.values(questions).filter((question) => {
     return (
