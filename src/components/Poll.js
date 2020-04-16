@@ -4,21 +4,16 @@ import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { handleAnswerQuestion } from "../actions/questions";
+import PollResults from "./PollResults";
+import PollForm from "./PollForm";
 import {
   Card,
   CardContent,
   Typography,
   makeStyles,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Avatar,
   Button,
-  Divider,
-  LinearProgress,
 } from "@material-ui/core";
-import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -38,8 +33,8 @@ const Poll = ({
   poll,
   authorAvatar,
   isAnswered,
-  chosenAnswer,
   pollPage,
+  authedUser,
 }) => {
   const classes = useStyles();
   const selectRadio = (e) => {
@@ -49,66 +44,13 @@ const Poll = ({
       : dispatch(handleAnswerQuestion(poll.id, answer));
   };
 
-  const form = () => {
-    return (
-      <RadioGroup
-        aria-label="poll"
-        name="poll"
-        value={isAnswered ? chosenAnswer : null}
-        onChange={selectRadio}
-      >
-        <FormControlLabel
-          value={"optionOne"}
-          control={<Radio />}
-          label={poll.optionOne.text}
-        />
-        <FormControlLabel
-          value={"optionTwo"}
-          control={<Radio />}
-          label={poll.optionTwo.text}
-        />
-      </RadioGroup>
-    );
-  };
-
-  const results = () => {
-    const optionOneVotes = poll.optionOne.votes.length;
-    const optionTwoVotes = poll.optionTwo.votes.length;
-    const totalVotes = [...poll.optionOne.votes, ...poll.optionTwo.votes]
-      .length;
-    const optionOnePerc = Math.floor((optionOneVotes / totalVotes) * 100);
-    const optionTwoPerc = Math.floor((optionTwoVotes / totalVotes) * 100);
-    return (
-      <>
-        <Typography variant="h6">
-          {chosenAnswer === "optionOne" && (
-            <CheckCircleOutlineIcon style={{ color: green[500] }} />
-          )}
-          {poll.optionOne.text} ({optionOnePerc}%)
-        </Typography>
-        <LinearProgress variant="determinate" value={optionOnePerc} />
-        <Typography variant="subtitle2">
-          {optionOneVotes} out of {totalVotes} votes
-        </Typography>
-        <Divider />
-        <Typography variant="h6">
-          {chosenAnswer === "optionTwo" && (
-            <CheckCircleOutlineIcon style={{ color: green[500] }} />
-          )}
-          {poll.optionTwo.text} ({optionTwoPerc}%)
-        </Typography>
-        <LinearProgress variant="determinate" value={optionTwoPerc} />
-        <Typography variant="subtitle2">
-          {optionTwoVotes} out of {totalVotes} votes
-        </Typography>
-      </>
-    );
-  };
-
   if (typeof poll === "undefined") {
     return <Redirect to="/404" />;
   }
 
+  const chosenAnswer = poll.optionOne.votes.includes(authedUser)
+    ? "optionOne"
+    : "optionTwo";
   return (
     <Card className={classes.card}>
       <CardContent className="content">
@@ -121,8 +63,21 @@ const Poll = ({
           <Typography variant="h6">{poll.author} asks</Typography>
         </div>
         <Typography variant="h5">Would You Rather:</Typography>
-        {(!pollPage || (pollPage && !isAnswered)) && form()}
-        {pollPage && isAnswered && results()}
+        {(!pollPage || (pollPage && !isAnswered)) && (
+          <PollForm
+            poll={poll}
+            chosenAnswer={chosenAnswer}
+            isAnswered={isAnswered}
+            onRadioSelect={selectRadio}
+          />
+        )}
+        {pollPage && isAnswered && (
+          <PollResults
+            poll={poll}
+            authedUser={authedUser}
+            chosenAnswer={chosenAnswer}
+          />
+        )}
         {!pollPage && (
           <Button to={`/questions/${poll.id}`} component={Link} color="primary">
             View Poll
@@ -141,12 +96,10 @@ const mapStateToProps = ({ questions, users, authedUser }, props) => {
     poll,
     authorAvatar: users[poll.author].avatarURL,
     pollPage,
-    chosenAnswer: poll.optionOne.votes.includes(authedUser)
-      ? "optionOne"
-      : "optionTwo",
     isAnswered: [...poll.optionOne.votes, ...poll.optionTwo.votes].includes(
       authedUser
     ),
+    authedUser,
   };
 };
 
