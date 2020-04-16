@@ -51,7 +51,7 @@ const NewPoll = ({ history, dispatch }) => {
   };
 
   const submitDisabled =
-    options.optionOneText.length < 6 && options.optionTwoText.length < 6;
+    options.optionOneText.length < 6 || options.optionTwoText.length < 6;
 
   return (
     <Grid item container xs={4}>
