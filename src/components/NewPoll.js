@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import { handleSaveQuestion } from "../actions/questions";
+import { withRouter } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-const NewPoll = ({ dispatch }) => {
+const NewPoll = ({ history, dispatch }) => {
   const classes = useStyles();
   const [options, setOptions] = useState({
     optionOneText: "",
@@ -39,12 +40,14 @@ const NewPoll = ({ dispatch }) => {
   };
 
   const handleSubmit = (e) => {
-    dispatch(handleSaveQuestion(options)).then(
-      setOptions({
-        optionOneText: "",
-        optionTwoText: "",
-      })
-    );
+    dispatch(handleSaveQuestion(options))
+      .then(
+        setOptions({
+          optionOneText: "",
+          optionTwoText: "",
+        })
+      )
+      .then(history.push("/"));
   };
 
   const submitDisabled =
@@ -87,4 +90,4 @@ const NewPoll = ({ dispatch }) => {
   );
 };
 
-export default connect()(NewPoll);
+export default withRouter(connect()(NewPoll));

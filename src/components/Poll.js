@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { handleAnswerQuestion } from "../actions/questions";
 import {
@@ -17,6 +17,8 @@ import {
   Divider,
   LinearProgress,
 } from "@material-ui/core";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -81,6 +83,9 @@ const Poll = ({
     return (
       <>
         <Typography variant="h6">
+          {chosenAnswer === "optionOne" && (
+            <CheckCircleOutlineIcon style={{ color: green[500] }} />
+          )}
           {poll.optionOne.text} ({optionOnePerc}%)
         </Typography>
         <LinearProgress variant="determinate" value={optionOnePerc} />
@@ -89,6 +94,9 @@ const Poll = ({
         </Typography>
         <Divider />
         <Typography variant="h6">
+          {chosenAnswer === "optionTwo" && (
+            <CheckCircleOutlineIcon style={{ color: green[500] }} />
+          )}
           {poll.optionTwo.text} ({optionTwoPerc}%)
         </Typography>
         <LinearProgress variant="determinate" value={optionTwoPerc} />
@@ -98,6 +106,10 @@ const Poll = ({
       </>
     );
   };
+
+  if (typeof poll === "undefined") {
+    return <Redirect to="/404" />;
+  }
 
   return (
     <Card className={classes.card}>
@@ -124,7 +136,7 @@ const Poll = ({
 };
 
 const mapStateToProps = ({ questions, users, authedUser }, props) => {
-  const id = props.match.params.id || props.id;
+  const id = props.match.params.question_id || props.id;
   const poll = questions[id];
   const pollPage = props.match.path.includes("questions/");
   return {

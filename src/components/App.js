@@ -6,6 +6,7 @@ import HomeScreen from "../components/HomeScreen";
 import Poll from "../components/Poll";
 import NewPoll from "../components/NewPoll";
 import LeaderBoard from "../components/LeaderBoard";
+import NotFound from "../components/NotFound";
 import { Grid } from "@material-ui/core";
 import { connect } from "react-redux";
 import { getInitialData } from "../actions/shared";
@@ -30,15 +31,16 @@ function App({ authedUser, dispatch }) {
               <Route exact path="/">
                 {!loggedIn ? <Redirect to="/login" /> : <HomeScreen />}
               </Route>
-              <Route exact path="/questions/:id">
+              <Route exact path="/questions/:question_id">
                 {!loggedIn ? <Redirect to="/login" /> : <Poll />}
               </Route>
-              <Route exact path="/new_poll">
+              <Route exact path="/add">
                 {!loggedIn ? <Redirect to="/login" /> : <NewPoll />}
               </Route>
               <Route exact path="/leaderboard">
                 {!loggedIn ? <Redirect to="/login" /> : <LeaderBoard />}
               </Route>
+              <Route component={NotFound} />
             </Switch>
           </Grid>
         </Grid>
