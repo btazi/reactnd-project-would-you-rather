@@ -46,9 +46,7 @@ const Poll = ({
     const answer = e.target.value;
     isAnswered
       ? alert("You have already voted for this question")
-      : dispatch(handleAnswerQuestion(poll.id, answer)).then(
-          alert("Your answer has been saved")
-        );
+      : dispatch(handleAnswerQuestion(poll.id, answer));
   };
 
   const form = () => {

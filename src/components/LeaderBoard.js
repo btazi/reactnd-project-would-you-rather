@@ -6,7 +6,6 @@ import {
   CardContent,
   CardMedia,
   Typography,
-  Divider,
   Chip,
   makeStyles,
 } from "@material-ui/core";

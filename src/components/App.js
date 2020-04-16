@@ -10,6 +10,7 @@ import NotFound from "../components/NotFound";
 import { Grid } from "@material-ui/core";
 import { connect } from "react-redux";
 import { getInitialData } from "../actions/shared";
+import LoadingBar from "react-redux-loading-bar";
 
 function App({ authedUser, dispatch }) {
   const loggedIn = authedUser !== "not_connected";
@@ -24,6 +25,7 @@ function App({ authedUser, dispatch }) {
             <Nav />
           </Grid>
           <Grid item container xs={12} justify="center">
+            <LoadingBar />
             <Switch>
               <Route exact path="/login">
                 {loggedIn ? <Redirect to="/" /> : <Login />}
