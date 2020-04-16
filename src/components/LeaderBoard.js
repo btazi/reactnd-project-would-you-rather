@@ -46,28 +46,33 @@ const useStyles = makeStyles((theme) => ({
 const LeaderBoard = ({ users }) => {
   const classes = useStyles();
   return (
-    <Grid container xs={6} direction="row" justify="center">
+    <Grid item container xs={6} direction="row" justify="center">
       <Grid item xs={12}>
         <Typography align="center" variant="h2">
           Leader Board
         </Typography>
       </Grid>
       {users.map((user) => {
-        const answeredQuestions = Object.keys(user.answers).length;
-        const createdQuestions = user.questions.length;
-        const totalScore = answeredQuestions + createdQuestions;
+        const {
+          totalScore,
+          answeredQuestions,
+          createdQuestions,
+          name,
+          avatarURL,
+          id,
+        } = user;
         return (
-          <React.Fragment key={user.id}>
+          <React.Fragment key={id}>
             <Grid item xs={8}>
               <Card className={classes.leftCard}>
                 <CardMedia
                   className={classes.cover}
-                  image={user.avatarURL}
+                  image={avatarURL}
                   title="t"
                 ></CardMedia>
                 <CardContent className={classes.details}>
                   <Typography variant="h5" className={classes.cardTitle}>
-                    {user.name}
+                    {name}
                   </Typography>
                   <Typography variant="subtitle1">
                     Answered questions: {answeredQuestions}
@@ -87,7 +92,6 @@ const LeaderBoard = ({ users }) => {
                   <div className={classes.scoreBox}>
                     <Chip
                       color="secondary"
-                      avatar={user.avatarURL}
                       label={totalScore}
                       className={classes.score}
                     />
@@ -104,7 +108,21 @@ const LeaderBoard = ({ users }) => {
 
 const mapStateToProps = ({ users }) => {
   return {
-    users: Object.values(users),
+    users: Object.values(users)
+      .map((user) => {
+        const answeredQuestions = Object.keys(user.answers).length;
+        const createdQuestions = user.questions.length;
+        const totalScore = answeredQuestions + createdQuestions;
+        return {
+          answeredQuestions,
+          createdQuestions,
+          totalScore,
+          name: user.name,
+          avatarURL: user.avatarURL,
+          id: user.id,
+        };
+      })
+      .sort((a, b) => b.totalScore - a.totalScore),
   };
 };
 
