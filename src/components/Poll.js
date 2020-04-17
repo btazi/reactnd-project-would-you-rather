@@ -1,11 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { handleAnswerQuestion } from "../actions/questions";
 import PollResults from "./PollResults";
 import PollForm from "./PollForm";
+import NotFound from "./NotFound";
 import {
   Card,
   CardContent,
@@ -37,16 +37,15 @@ const Poll = ({
   authedUser,
 }) => {
   const classes = useStyles();
+  if (typeof poll === "undefined") {
+    return <NotFound />;
+  }
   const selectRadio = (e) => {
     const answer = e.target.value;
     isAnswered
       ? alert("You have already voted for this question")
       : dispatch(handleAnswerQuestion(poll.id, answer));
   };
-
-  if (typeof poll === "undefined") {
-    return <Redirect to="/404" />;
-  }
 
   const chosenAnswer = poll.optionOne.votes.includes(authedUser)
     ? "optionOne"
@@ -94,17 +93,13 @@ const mapStateToProps = ({ questions, users, authedUser }, props) => {
   const pollPage = props.match.path.includes("questions/");
   return {
     poll,
-    authorAvatar: users[poll.author].avatarURL,
+    authorAvatar: poll ? users[poll.author].avatarURL : null,
     pollPage,
-    isAnswered: [...poll.optionOne.votes, ...poll.optionTwo.votes].includes(
-      authedUser
-    ),
+    isAnswered: poll
+      ? [...poll.optionOne.votes, ...poll.optionTwo.votes].includes(authedUser)
+      : null,
     authedUser,
   };
-};
-
-Poll.propTypes = {
-  poll: PropTypes.object.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(Poll));

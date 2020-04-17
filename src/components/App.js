@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Nav from "./Nav";
 import Login from "../components/Login";
 import HomeScreen from "../components/HomeScreen";
@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import { getInitialData } from "../actions/shared";
 import LoadingBar from "react-redux-loading-bar";
 
-function App({ authedUser, dispatch }) {
+function App({ authedUser, dispatch, location }) {
   const loggedIn = authedUser !== "not_connected";
   useEffect(() => {
     dispatch(getInitialData());
@@ -26,24 +26,25 @@ function App({ authedUser, dispatch }) {
           </Grid>
           <Grid item container xs={12} justify="center">
             <LoadingBar />
-            <Switch>
-              <Route exact path="/login">
-                {loggedIn ? <Redirect to="/" /> : <Login />}
-              </Route>
-              <Route exact path="/">
-                {!loggedIn ? <Redirect to="/login" /> : <HomeScreen />}
-              </Route>
-              <Route exact path="/questions/:question_id">
-                {!loggedIn ? <Redirect to="/login" /> : <Poll />}
-              </Route>
-              <Route exact path="/add">
-                {!loggedIn ? <Redirect to="/login" /> : <NewPoll />}
-              </Route>
-              <Route exact path="/leaderboard">
-                {!loggedIn ? <Redirect to="/login" /> : <LeaderBoard />}
-              </Route>
-              <Route component={NotFound} />
-            </Switch>
+            {!loggedIn && (
+              <Switch>
+                <Route
+                  path=""
+                  render={({ location }) => (
+                    <Login fromPath={location.pathname} />
+                  )}
+                />
+              </Switch>
+            )}
+            {loggedIn && (
+              <Switch>
+                <Route exact path="/" component={HomeScreen} />
+                <Route exact path="/questions/:question_id" component={Poll} />
+                <Route exact path="/add" component={NewPoll} />
+                <Route exact path="/leaderboard" component={LeaderBoard} />
+                <Route component={NotFound} />
+              </Switch>
+            )}
           </Grid>
         </Grid>
       </Grid>

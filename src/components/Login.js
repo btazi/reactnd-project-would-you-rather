@@ -4,6 +4,7 @@ import { getInitialData } from "../actions/shared";
 import { login } from "../actions/authedUser";
 import { Grid, Paper, Typography, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -16,13 +17,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = (props) => {
-  const { dispatch, users, authedUser } = props;
+const Login = ({ dispatch, users, authedUser, fromPath }) => {
   const classes = useStyles();
 
   const handleUserSelect = (e) => {
     const user = e.target.value;
-    return dispatch(login(user));
+    dispatch(login(user));
+    if (fromPath !== null) {
+      return <Redirect to={fromPath} />;
+    }
   };
 
   useEffect(() => {
